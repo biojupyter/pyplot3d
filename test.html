@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <title>Test Three.js app</title>
+  </head>
+  <body>
+    <canvas id="UUID000000" width="600" height="400"></canvas>
+    <script type="text/javascript" src="js/three.min.js"></script>
+    <script type="text/javascript" src="js/TrackBallControls.js"></script>
+    <script>
+
+      var canvas = document.getElementById("UUID000000");
+
+      var light1, light2, light3;
+      var lpos1, lpos2, lpos3;
+      var camera, camera_pos, controls; 
+      var scene, renderer;
+
+      init();
+      render();
+      animate();
+
+      function init_camera() {
+        camera = new THREE.PerspectiveCamera( 75, canvas.width/canvas.height, 0.1, 100);
+        camera_pos = new THREE.Vector3( 1., 3., 2. );
+        camera.position.copy( camera_pos ); 
+        // camera.position.set( 1., 3., 2. );
+        camera.up = new THREE.Vector3( 0, 0, 1 );
+        camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+
+        controls = new THREE.TrackballControls( camera );
+
+        controls.rotateSpeed = 5.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+
+        controls.noZoom = false;
+        controls.noPan = false;
+
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+
+        controls.keys = [ 65, 83, 68 ];
+
+        controls.addEventListener( 'change', render );        
+      }
+
+      function init_lights() {
+        light1 = new THREE.DirectionalLight( 0xff6666 );
+        lpos1 = new THREE.Vector3( 0, 0, 1 );
+        light1.position.copy( lpos1 );
+        scene.add( light1 );
+
+        // light2 = new THREE.DirectionalLight( 0x66ff66 );
+        // lpos2 = new THREE.Vector3( 0.6, 0, 0.8 );
+        // light2.position.copy( lpos2 );
+        // scene.add( light2 );
+
+        // light3 = new THREE.DirectionalLight( 0x6666ff );
+        // lpos3 = new THREE.Vector3( 0, 0.6, 0.8 );
+        // light3.position.copy( lpos3 );
+        // scene.add( light3 );
+
+        var light = new THREE.AmbientLight( 0x333333 );
+        scene.add( light );
+      }
+
+      function init() {
+        scene = new THREE.Scene();
+
+        init_camera();
+
+        renderer = new THREE.WebGLRenderer({ canvas: canvas});
+        renderer.setSize( canvas.width, canvas.height);
+
+        init_lights();
+
+        var geometry = new THREE.SphereGeometry( 1, 32, 32 );
+        var material = new THREE.MeshPhongMaterial( {color: 0xcccccc});
+        var sphere = new THREE.Mesh( geometry, material );
+        scene.add( sphere );
+        geometry = new THREE.BoxGeometry( 0.8, 0.9, 1. );
+        material = new THREE.MeshLambertMaterial( {color: 0x0000cc});
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.set( -1, -1, -1 );
+        scene.add( cube );
+      }
+
+      function animate(){
+        requestAnimationFrame( animate );
+        controls.update();        
+      }
+
+      function render(){
+        var axis = new THREE.Vector3();
+        var angle, length;
+
+        axis.crossVectors( camera_pos, camera.position );
+        length = axis.length();
+        axis.divideScalar( length );
+        angle = camera_pos.angleTo( camera.position );
+        light1.position.copy( lpos1 );
+        light1.position.applyAxisAngle( axis, -angle );
+
+        renderer.render(scene, camera);
+      }
+
+    </script>
+  </body>
