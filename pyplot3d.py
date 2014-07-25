@@ -1,6 +1,8 @@
-import webbrowser, os
-
-webbrowser.open('file://'+os.path.realpath('test.html'))
+import os
+import tempfile
+import webbrowser
+import time
+from uuid import uuid4 as uuid
 
 class Vector3:
   def __init__(self):
@@ -26,7 +28,7 @@ class Vector3:
     self.y *= a
     self.z *= a
 
-  def normalize(self);
+  def normalize(self):
     l = self.length()
     if( l != 0 ):
       self.scalar_mul( 1./l )
@@ -56,40 +58,45 @@ class Point:
   def transform(self, t):
     self.p.transform( t)
 
-  def write(self):
-    
-
-
-html_wrapper = r"""<html>
+html_wrapper = """<html>
   <head>
     <title>Test Three.js app</title>
   </head>
   <body>
-    $$PLOT_HTML$$
+    {PLOT_HTML}
   </body>
 </html>
 """
 
-plot_html = r"""
-    <canvas id="$$UUID$$" width="600" height="400"></canvas>
+plot_html = """
+    <canvas 
+      id="{UUID}" 
+      width="600" 
+      height="400"
+    >
+    </canvas>
     <script type="text/javascript" src="js/three.min.js"></script>
     <script type="text/javascript" src="js/TrackBallControls.js"></script>
-    $$SCRIPT_MAIN$$
+    <script type="text/javascript" src="js/OrbitControls.js"></script>
+    {SCRIPT_MAIN}
 """
 
-script_main = r"""
+script_main = """
     <script>
 
-      var canvas = document.getElementById("$$UUID$$");
+      var canvas = 
+        document.getElementById("{UUID}");
 
       var camera, controls; 
       var scene, renderer;
 
-      renderer = new THREE.WebGLRenderer({ 
+      renderer = new THREE.WebGLRenderer({{ 
         canvas: canvas,
         alpha: true
-      });
+      }});
       renderer.setSize( canvas.width, canvas.height);
+      scene = new THREE.Scene();
+
       init_camera();
       init_lights();
       init_controls();
@@ -98,16 +105,16 @@ script_main = r"""
       render();
       animate();
 
-      $$INIT_CAMERA$$
-      $$INIT_LIGHTS$$
-      $$INIT_CONTROLS$$
-      $$INIT_SCENE$$
-      $$RENDER$$
-      $$ANIMATE$$
+      {INIT_CAMERA}
+      {INIT_LIGHTS}
+      {INIT_CONTROLS}
+      {INIT_SCENE}
+      {RENDER}
+      {ANIMATE}
     </script>
 """
 
-script_init_camera = r"""
+script_init_camera = """
       function init_camera() {
         camera = new THREE.PerspectiveCamera( 
           75, 
@@ -121,7 +128,7 @@ script_init_camera = r"""
       }
 """
 
-script_init_lights = r"""
+script_init_lights = """
       function init_lights() {
         var light = new THREE.DirectionalLight( 0x882222 );
         camera.add( light );
@@ -141,9 +148,9 @@ script_init_lights = r"""
       }
 """
 
-script_init_controls = r"""
+script_init_controls = """
       function init_controls() {
-        controls = new THREE.TrackballControls( camera, canvas );
+        controls = new THREE.OrbitControls( camera, canvas );
 
         controls.rotateSpeed = 5.0;
         controls.zoomSpeed = 1.2;
@@ -158,7 +165,7 @@ script_init_controls = r"""
       }
 """
 
-script_init_scene = r"""
+script_init_scene = """
       function init_scene() {
 
         var material = new THREE.MeshPhongMaterial( {
@@ -179,15 +186,35 @@ script_init_scene = r"""
       }
 """
 
-script_render = r"""
+script_render = """
       function render(){
         renderer.render(scene, camera);
       }
 """
 
-script_animate = r"""
+script_animate = """
       function animate(){
         requestAnimationFrame( animate );
         controls.update();        
       }
 """
+
+if __name__ == '__main__':
+  # f = tempfile.NamedTemporaryFile(suffix='.html')
+  f = open('temp.html', 'w+b')
+  uu = uuid()
+  text = script_main.format(UUID=uu,
+                            INIT_CAMERA=script_init_camera,
+                            INIT_LIGHTS=script_init_lights,
+                            INIT_CONTROLS=script_init_controls,
+                            INIT_SCENE=script_init_scene,
+                            RENDER=script_render,
+                            ANIMATE=script_animate)
+  text = plot_html.format(UUID=uu, SCRIPT_MAIN=text)
+  text = html_wrapper.format(PLOT_HTML=text)
+  print( f.name)
+  f.write(text.encode('utf-8'))
+  f.close()
+  webbrowser.open('file://'+os.path.realpath(f.name))
+
+
