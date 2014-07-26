@@ -67,8 +67,8 @@ class Vector3:
     scale = 1./self.mag()
     self._v = [x*scale for x in self._v]
 
-  def newTHREE(self, *args):
-    return (" "*args[0])+"new THREE.Vector3({})".format(self)
+  def THREEjs(self):
+    return ("new THREE.Vector3({});".format(self)
 
 class Edge:
   __slots__ = ('_v',)
@@ -122,25 +122,6 @@ class Mesh:
       raise ValueError("Mesh.__init__ takes 1 or 4 parameters")
 
   def toTHREEjs(self):
-    if len(self._p):
-      mat_string = """\
-      var material = new THREE.PointCloudMaterial({
-        color = 0x000000,
-        size = 1.0,
-        sizeAttenuation = false,
-        vertexColors = false,
-      });
-      """
-      geo_string = """\
-      var geometry = new THREE.Geometry();
-      geometry.vertices.push(
-        {}
-      )
-      """
-      verts = [self._v[i] for i in self._p];
-      vert_strs = ["new THREE.Vector3({})".format(x._v) for x in verts]
-      allverts_str = ",/n".join(vert_strs)
-      mat_string+geo_string
 
 _p_mat_str = """\
 var material = new THREE.PointCloudMaterial({{
@@ -148,7 +129,7 @@ var material = new THREE.PointCloudMaterial({{
   size : {},
   sizeAttenuation : false,
   fog : true
-}})
+}});
 """
 
 _p_color = '0x000000'
@@ -158,7 +139,7 @@ _p_geo_str = """\
 var geometry = new THREE.Geometry();
 geometry.vertices.push(
   {}
-)
+);
 """
 
 _p_add_str = """\
@@ -171,7 +152,7 @@ var material = new THREE.LineBasicMaterial({{
   color : {},
   linewidth : {},
   fog : true
-}})
+}});
 """
 
 _l_color = '0x000000'
@@ -201,3 +182,13 @@ _m_specular = "0x444444"
 _m_shininess = 100
 _m_transparent = "false"
 _m_opacity = 1.0
+
+_m_geo_str = """\
+var geometry = new THREE.Geometry();
+geometry.vertices.push(
+  {}
+);
+geometry.faces.push(
+  {}
+);
+"""
