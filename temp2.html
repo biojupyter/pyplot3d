@@ -1,0 +1,344 @@
+<html>
+  <head>
+    <title>Test Three.js app</title>
+  </head>
+  <body>
+<script type="text/javascript" src="js/three.min.js"></script>
+<script type="text/javascript" src="js/TrackBallControls.js"></script>
+<script type="text/javascript" src="js/OrbitControls.js"></script>
+<canvas 
+  id="4e4ac8c7-8b8a-4241-8a0a-745c654fcdc3" 
+  width="600" 
+  height="400"
+>
+</canvas>
+
+<script>
+var canvas = 
+  document.getElementById("4e4ac8c7-8b8a-4241-8a0a-745c654fcdc3");
+
+var camera, controls; 
+var scene, renderer;
+
+renderer = new THREE.WebGLRenderer({ 
+  canvas: canvas,
+  alpha: true,
+  antialiasing: true
+});
+renderer.setSize( canvas.width, canvas.height);
+
+scene = new THREE.Scene();
+
+init_camera();
+init_lights();
+init_controls();
+init_scene();
+
+render();
+animate();
+
+function init_camera() {
+  camera = new THREE.PerspectiveCamera( 
+    22.5, 
+    canvas.width/canvas.height, 
+    0.1, 
+    1000.0
+  );
+  camera.position.set( 16.45615732590992, -4.8635539349926145, 5.609633351839717 ); 
+  camera.up = new THREE.Vector3(0.0, 0.0, 1.0);
+  camera.lookAt( new THREE.Vector3(1.4999999999999998, -0.0040038398464061434, 0.49999999999999994) );
+}
+
+function init_lights() {
+  var light = new THREE.DirectionalLight( 0x882222 );
+  camera.add( light );
+  light.position.set( 0, 100., 30. );
+
+  light = new THREE.DirectionalLight( 0x228822 );
+  camera.add( light );
+  light.position.set( 60., 80., 30. );
+
+  light = new THREE.DirectionalLight( 0x222288 );
+  camera.add( light );
+  light.position.set( 0., 80., 90. );
+
+  light = new THREE.AmbientLight( 0x444444 );
+  scene.add( light );
+  scene.add( camera );
+
+}  
+
+function init_controls() {
+  controls = new THREE.OrbitControls( camera, canvas );
+  controls.rotateSpeed = 5.0;
+  controls.zoomSpeed = 1.2;
+  controls.noZoom = false;
+  controls.noPan = true;
+  controls.staticMoving = true;
+  controls.dynamicDampingFactor = 0.3;
+  controls.addEventListener( 'change', render ); 
+  controls.target.set( 1.4999999999999998, -0.0040038398464061434, 0.49999999999999994 );
+}
+
+function init_scene() {
+  var canv = document.createElement('canvas');
+  var context = canv.getContext('2d');
+  var boarderWidth = 1.0;
+  var margin = 5.0;
+  var textHeight = 10;
+  var text = "center";
+  var font = 'Helvetica';
+  context.font = textHeight + 'pt ' + font;
+  var metrics = context.measureText( text);
+  var textWidth = metrics.width;
+  var rectHeight = 2*margin + textHeight;
+  var rectWidth = 2*margin + textWidth;
+      var canv_size = 2*boarderWidth + 2 + 
+      Math.max(rectHeight,rectWidth);
+    canv.height = canv_size;
+    canv.width = canv_size;
+    context.translate( canv_size/2, canv_size/2);
+    context.scale(1,-1);
+    context.rect(-rectWidth/2, -rectHeight/2, rectWidth, rectHeight);
+      context.fillStyle = 'rgb(255,255,255)';
+  context.fill();
+    context.font = textHeight + 'pt ' + font;
+  context.fillStyle = 'rgb(0,0,0)';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText( text, 0, 0);
+  var texture = new THREE.Texture(canv);
+  texture.needsUpdate = true;
+  var material = new THREE.PointCloudMaterial({
+    map: texture,
+    transparent: true,
+    size: canv_size*canv_size,
+    sizeAttenuation: false,
+    fog: true
+  });
+  material.alphaTest = 0.1;
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(1.5, -0.1, 0.5)
+  )
+  var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
+  scene.add( point);
+    var canv = document.createElement('canvas');
+  var context = canv.getContext('2d');
+  var boarderWidth = 1.0;
+  var margin = 5.0;
+  var textHeight = 10;
+  var text = "top";
+  var font = 'Helvetica';
+  context.font = textHeight + 'pt ' + font;
+  var metrics = context.measureText( text);
+  var textWidth = metrics.width;
+  var rectHeight = 2*margin + textHeight;
+  var rectWidth = 2*margin + textWidth;
+      var canv_size = 2*boarderWidth + 2 + 
+      2*Math.max(rectHeight,rectWidth);
+    canv.height = canv_size;
+    canv.width = canv_size;
+    context.translate( canv_size/2 , canv_size/2);
+    context.scale(1,-1);
+    context.translate( 0, rectHeight/2);
+    context.rect(-rectWidth/2, -rectHeight/2, rectWidth, rectHeight);
+      context.fillStyle = 'rgb(255,255,255)';
+  context.fill();
+    context.font = textHeight + 'pt ' + font;
+  context.fillStyle = 'rgb(0,0,0)';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText( text, 0, 0);
+  var texture = new THREE.Texture(canv);
+  texture.needsUpdate = true;
+  var material = new THREE.PointCloudMaterial({
+    map: texture,
+    transparent: true,
+    size: canv_size*canv_size,
+    sizeAttenuation: false,
+    fog: true
+  });
+  material.alphaTest = 0.1;
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(1.5, -0.1, 1.0)
+  )
+  var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
+  scene.add( point);
+    var canv = document.createElement('canvas');
+  var context = canv.getContext('2d');
+  var boarderWidth = 1.0;
+  var margin = 5.0;
+  var textHeight = 10;
+  var text = "bottom";
+  var font = 'Helvetica';
+  context.font = textHeight + 'pt ' + font;
+  var metrics = context.measureText( text);
+  var textWidth = metrics.width;
+  var rectHeight = 2*margin + textHeight;
+  var rectWidth = 2*margin + textWidth;
+      var canv_size = 2*boarderWidth + 2 + 
+      2*Math.max(rectHeight,rectWidth);
+    canv.height = canv_size;
+    canv.width = canv_size;
+    context.translate( canv_size/2 , canv_size/2);
+    context.scale(1,-1);
+    context.translate( 0, -rectHeight/2);
+    context.rect(-rectWidth/2, -rectHeight/2, rectWidth, rectHeight);
+      context.fillStyle = 'rgb(255,255,255)';
+  context.fill();
+    context.font = textHeight + 'pt ' + font;
+  context.fillStyle = 'rgb(0,0,0)';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText( text, 0, 0);
+  var texture = new THREE.Texture(canv);
+  texture.needsUpdate = true;
+  var material = new THREE.PointCloudMaterial({
+    map: texture,
+    transparent: true,
+    size: canv_size*canv_size,
+    sizeAttenuation: false,
+    fog: true
+  });
+  material.alphaTest = 0.1;
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(1.5, -0.1, 0.0)
+  )
+  var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
+  scene.add( point);
+    var canv = document.createElement('canvas');
+  var context = canv.getContext('2d');
+  var boarderWidth = 1.0;
+  var margin = 5.0;
+  var textHeight = 10;
+  var text = "left";
+  var font = 'Helvetica';
+  context.font = textHeight + 'pt ' + font;
+  var metrics = context.measureText( text);
+  var textWidth = metrics.width;
+  var rectHeight = 2*margin + textHeight;
+  var rectWidth = 2*margin + textWidth;
+      var canv_size = 2*boarderWidth + 2 + 
+      2*Math.max(rectHeight,rectWidth);
+    canv.height = canv_size;
+    canv.width = canv_size;
+    context.translate( canv_size/2, canv_size/2);
+    context.scale(1,-1);
+    context.translate( rectWidth/2, 0);
+    context.rect(-rectWidth/2, -rectHeight/2, rectWidth, rectHeight);
+      context.fillStyle = 'rgb(255,255,255)';
+  context.fill();
+    context.font = textHeight + 'pt ' + font;
+  context.fillStyle = 'rgb(0,0,0)';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText( text, 0, 0);
+  var texture = new THREE.Texture(canv);
+  texture.needsUpdate = true;
+  var material = new THREE.PointCloudMaterial({
+    map: texture,
+    transparent: true,
+    size: canv_size*canv_size,
+    sizeAttenuation: false,
+    fog: true
+  });
+  material.alphaTest = 0.1;
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(0.0, -0.1, 0.5)
+  )
+  var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
+  scene.add( point);
+    var canv = document.createElement('canvas');
+  var context = canv.getContext('2d');
+  var boarderWidth = 1.0;
+  var margin = 5.0;
+  var textHeight = 10;
+  var text = "right";
+  var font = 'Helvetica';
+  context.font = textHeight + 'pt ' + font;
+  var metrics = context.measureText( text);
+  var textWidth = metrics.width;
+  var rectHeight = 2*margin + textHeight;
+  var rectWidth = 2*margin + textWidth;
+      var canv_size = 2*boarderWidth + 2 + 
+      2*Math.max(rectHeight,rectWidth);
+    canv.height = canv_size;
+    canv.width = canv_size;
+    context.translate( canv_size/2, canv_size/2);
+    context.scale(1,-1);
+    context.translate( -rectWidth/2, 0);
+    context.rect(-rectWidth/2, -rectHeight/2, rectWidth, rectHeight);
+      context.fillStyle = 'rgb(255,255,255)';
+  context.fill();
+    context.font = textHeight + 'pt ' + font;
+  context.fillStyle = 'rgb(0,0,0)';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText( text, 0, 0);
+  var texture = new THREE.Texture(canv);
+  texture.needsUpdate = true;
+  var material = new THREE.PointCloudMaterial({
+    map: texture,
+    transparent: true,
+    size: canv_size*canv_size,
+    sizeAttenuation: false,
+    fog: true
+  });
+  material.alphaTest = 0.1;
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(3.0, -0.1, 0.5)
+  )
+  var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
+  scene.add( point);
+    var material = new THREE.MeshPhongMaterial( {
+    color : 0x00ffff,
+    ambient : 0xffffff,
+    specular : 0x444444,
+    emissive : 0x000000,
+    shininess : 100,
+    transparent : false,
+    opacity : 1.0,
+    side: THREE.DoubleSide,
+    wireframe : false,
+    fog : true,
+  });
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(0.0, 0.0, 0.0),
+  new THREE.Vector3(3.0, 0.0, 0.0),
+  new THREE.Vector3(3.0, 0.0, 1.0),
+  new THREE.Vector3(0.0, 0.0, 1.0)
+  );
+  geometry.faces.push(
+    new THREE.Face3(0,1,2),
+  new THREE.Face3(2,3,0)
+  );
+  geometry.computeFaceNormals();
+  
+  var mesh = new THREE.Mesh( geometry, material);
+  scene.add( mesh);
+  
+}
+
+function render(){
+  renderer.render(scene, camera);
+}
+
+function animate(){
+  requestAnimationFrame( animate );
+  controls.update();        
+}
+</script>
+
+  </body>
+</html>

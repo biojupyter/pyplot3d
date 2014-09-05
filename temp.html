@@ -7,7 +7,7 @@
 <script type="text/javascript" src="js/TrackBallControls.js"></script>
 <script type="text/javascript" src="js/OrbitControls.js"></script>
 <canvas 
-  id="43f83793-505b-4caa-abbe-52906f24be7c" 
+  id="7e20a710-9577-48b7-a1ab-434ab3d1dd4e" 
   width="600" 
   height="400"
 >
@@ -15,7 +15,7 @@
 
 <script>
 var canvas = 
-  document.getElementById("43f83793-505b-4caa-abbe-52906f24be7c");
+  document.getElementById("7e20a710-9577-48b7-a1ab-434ab3d1dd4e");
 
 var camera, controls; 
 var scene, renderer;
@@ -44,9 +44,9 @@ function init_camera() {
     0.1, 
     1000.0
   );
-  camera.position.set( 8.687731898003081, -2.1603553611356388, 3.2972631652838773 ); 
+  camera.position.set( 8.970129420641078, -2.2518929835387413, 3.393511517337327 ); 
   camera.up = new THREE.Vector3(0.0, 0.0, 1.0);
-  camera.lookAt( new THREE.Vector3(0.4999999999999996, 0.4999999999999996, 0.4999999999999997) );
+  camera.lookAt( new THREE.Vector3(0.5006736891358027, 0.5, 0.5) );
 }
 
 function init_lights() {
@@ -77,52 +77,12 @@ function init_controls() {
   controls.staticMoving = true;
   controls.dynamicDampingFactor = 0.3;
   controls.addEventListener( 'change', render ); 
-  controls.target.set( 0.4999999999999996, 0.4999999999999996, 0.4999999999999997 );
+  controls.target.set( 0.5006736891358027, 0.5, 0.5 );
 }
 
 function init_scene() {
-  var material = new THREE.MeshPhongMaterial( {
-    color : 0x0000ff,
-    ambient : 0xffffff,
-    specular : 0x444444,
-    emissive : 0x000000,
-    shininess : 100,
-    transparent : false,
-    opacity : 1.0,
-    side: THREE.DoubleSide,
-    wireframe : false,
-    fog : true,
-  });
-  var geometry = new THREE.Geometry();
-  geometry.vertices.push(
-    new THREE.Vector3(0.0, 0.0, 0.0),
-  new THREE.Vector3(1.0, 0.0, 0.0),
-  new THREE.Vector3(1.0, 1.0, 0.0),
-  new THREE.Vector3(0.0, 1.0, 0.0),
-  new THREE.Vector3(0.0, 0.0, 1.0),
-  new THREE.Vector3(1.0, 0.0, 1.0),
-  new THREE.Vector3(1.0, 1.0, 1.0),
-  new THREE.Vector3(0.0, 1.0, 1.0)
-  );
-  geometry.faces.push(
-    new THREE.Face3(0,1,2),
-  new THREE.Face3(0,2,3),
-  new THREE.Face3(0,4,1),
-  new THREE.Face3(1,4,5),
-  new THREE.Face3(1,5,2),
-  new THREE.Face3(2,5,6),
-  new THREE.Face3(2,6,3),
-  new THREE.Face3(3,6,7),
-  new THREE.Face3(3,7,0),
-  new THREE.Face3(0,7,4),
-  new THREE.Face3(4,6,5),
-  new THREE.Face3(6,4,7)
-  );
-  geometry.computeFaceNormals();
-  
-  var mesh = new THREE.Mesh( geometry, material);
-  scene.add( mesh);
-    var material = new THREE.LineBasicMaterial({
+  var i = 20;
+  var material = new THREE.LineBasicMaterial({
     color : 0xff0000,
     linewidth : 4.0,
     fog : true
@@ -201,39 +161,42 @@ function init_scene() {
   var line = new THREE.Line( geometry, material);
   scene.add( line);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
-        context.arc(cc,cc,ro,0,2*Math.PI,true);
-      context.fillStyle = 'rgba(255,0,0,1)';
+        var rc = 0.5*Math.sqrt(2)*ro;
+    context.arc(cc,cc,rc,0,2*Math.PI,true);
+      context.fillStyle = 'rgb(255,0,0)';
   context.fill();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(0.0, 0.0, 0.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
         context.moveTo((cc-ro*0.5*Math.sqrt(2)),(cc-ro*0.5*Math.sqrt(2)));
@@ -241,30 +204,32 @@ function init_scene() {
     context.lineTo((cc+ro*0.5*Math.sqrt(2)),(cc+ro*0.5*Math.sqrt(2)));
     context.lineTo((cc-ro*0.5*Math.sqrt(2)),(cc+ro*0.5*Math.sqrt(2)));
     context.closePath();
-      context.fillStyle = 'rgba(0,255,0,1)';
+      context.fillStyle = 'rgb(0,255,0)';
   context.fill();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(1.0, 0.0, 0.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
         context.moveTo(cc,cc-ro);
@@ -272,90 +237,96 @@ function init_scene() {
     context.lineTo(cc,cc+ro);
     context.lineTo(cc-ro,cc);
     context.closePath();
-      context.fillStyle = 'rgba(0,0,255,1)';
+      context.fillStyle = 'rgb(0,0,255)';
   context.fill();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(1.0, 1.0, 0.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
         context.moveTo((cc-ro*0.5*Math.sqrt(3)),(cc-ro*0.5));
     context.lineTo((cc+ro*0.5*Math.sqrt(3)),(cc-ro*0.5));
     context.lineTo(cc,cc+ro);
     context.closePath();
-      context.fillStyle = 'rgba(255,255,0,1)';
+      context.fillStyle = 'rgb(255,255,0)';
   context.fill();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(0.0, 1.0, 0.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
         context.moveTo(cc,cc-ro);
     context.lineTo((cc+ro*0.5*Math.sqrt(3)),(cc+ro*0.5));
     context.lineTo((cc-ro*0.5*Math.sqrt(3)),(cc+ro*0.5));
     context.closePath();
-      context.fillStyle = 'rgba(255,0,255,1)';
+      context.fillStyle = 'rgb(255,0,255)';
   context.fill();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(0.0, 0.0, 1.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
         var th = Math.PI/5;
@@ -372,30 +343,35 @@ function init_scene() {
     context.lineTo(cc+ro*Math.sin(8*th),cc+ro*Math.cos(8*th));
     context.lineTo(cc+ri*Math.sin(9*th),cc+ri*Math.cos(9*th));
     context.closePath();
-      context.fillStyle = 'rgba(0,255,255,1)';
+      context.fillStyle = 'rgb(0,255,255)';
   context.fill();
+    context.lineWidth = 1.0;
+  context.strokeStyle = 'black';
+  context.stroke();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(1.0, 0.0, 1.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
         context.moveTo((cc-ro*0.5*Math.sqrt(2)),(cc-ro*0.5*Math.sqrt(2)));
@@ -403,36 +379,39 @@ function init_scene() {
     context.lineTo((cc+ro*0.5*Math.sqrt(2)),(cc+ro*0.5*Math.sqrt(2)));
     context.lineTo((cc-ro*0.5*Math.sqrt(2)),(cc+ro*0.5*Math.sqrt(2)));
     context.closePath();
-      context.fillStyle = 'rgba(90,90,90,0.7)';
+      context.fillStyle = 'rgb(90,90,90)';
   context.fill();
     context.lineWidth = 1.0;
-  context.strokeStyle = 'rgb(0,0.5,0)';
+  context.strokeStyle = 'rgb(0,255,0)';
   context.stroke();
     var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(1.0, 1.0, 1.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
       var canv = document.createElement('canvas');
-    var point_size = 5*5.0;
-    var canv_size = point_size+2*1.0+2;
-    canv.width = canv_size;
-    canv.height = canv_size;
-    var cc = canv_size/2;
-    var ro = point_size/2;
+    var pointSize = 5*5.0;
+    var canvSize = pointSize+2*1.0+2;
+    canv.width = canvSize;
+    canv.height = canvSize;
+    var cc = canvSize/2;
+    var ro = pointSize/2;
     var context = canv.getContext('2d');
     context.beginPath();
-        context.arc(cc,cc,ro,0,2*Math.PI,true);
+        var rc = 0.5*Math.sqrt(2)*ro;
+    context.arc(cc,cc,rc,0,2*Math.PI,true);
       context.fillStyle = 'rgba(0,0,0,0)';
   context.fill();
     context.lineWidth = 1.0;
@@ -443,67 +422,109 @@ function init_scene() {
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: canvSize,
     sizeAttenuation: false,
     fog: true
   });
+  material.alphaTest = 0.05;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
     new THREE.Vector3(0.0, 1.0, 1.0)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
-  
-  var canv = document.createElement('canvas');
+    var canv = document.createElement('canvas');
   var context = canv.getContext('2d');
-  var boarderWidth = 1;
-  var margin = 5;
-  var textHeight = 12;
-  var text = "1.0";
+  var boarderWidth = 1.0;
+  var margin = 5.0;
+  var textHeight = 10;
+  var text = "hello world";
   var font = 'Helvetica';
   context.font = textHeight + 'pt ' + font;
   var metrics = context.measureText( text);
   var textWidth = metrics.width;
   var rectHeight = 2*margin + textHeight;
   var rectWidth = 2*margin + textWidth;
-  var canv_size = 2*boarderWidth + 2 + 
-    Math.max(rectHeight,rectWidth);
-  canv.height = canv_size;
-  canv.width = canv_size;
-  context.translate( canv.height/2, canv.width/2);
+  var canvSize = 2*(boarderWidth+1+Math.max(rectHeight,rectWidth));
+  canv.height = canvSize;
+  canv.width = canvSize;
+  context.translate( canvSize/2 , canvSize/2);
   context.scale(1,-1);
-  context.rect(-rectWidth/2, -rectHeight/2, rectWidth, rectHeight);
-  context.fillStyle = 'rgb(255,200,255)';
-  context.fill();
-  context.strokeStyle = 'rgb(0,0,0)';
-  context.lineWidth = boarderWidth;
-  context.stroke();
-  context.font = textHeight + 'pt Helvetica';
-  context.fillStyle = 'rgb(20,20,20)';
+  context.strokeRect( -canvSize/2, -canvSize/2, canvSize, canvSize);
+  
+      context.font = textHeight + 'pt ' + font;
+  context.fillStyle = 'rgb(0,0,0)';
   context.textAlign = 'center';
   context.textBaseline = 'middle';
   context.fillText( text, 0, 0);
   var texture = new THREE.Texture(canv);
   texture.needsUpdate = true;
+  var i = i+1;
   var material = new THREE.PointCloudMaterial({
     map: texture,
     transparent: true,
-    size: canv_size,
+    size: i*5,
     sizeAttenuation: false,
     fog: true
   });
+  console.log( canvSize);
+  console.log( material.size);
+  material.alphaTest = 0.1;
   var geometry = new THREE.Geometry();
   geometry.vertices.push(
-    new THREE.Vector3(0.5, 0.5, 1.1)
+    new THREE.Vector3(1.1, 0.5, 0.5)
   )
   var point = new THREE.PointCloud(geometry, material);
+  point.sortParticles = true;
   scene.add( point);
-
+    var material = new THREE.MeshPhongMaterial( {
+    color : 0x0000ff,
+    ambient : 0xffffff,
+    specular : 0x444444,
+    emissive : 0x000000,
+    shininess : 100,
+    transparent : true,
+    opacity : 0.8,
+    side: THREE.DoubleSide,
+    wireframe : false,
+    fog : true,
+  });
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(0.0, 0.0, 0.0),
+  new THREE.Vector3(1.0, 0.0, 0.0),
+  new THREE.Vector3(1.0, 1.0, 0.0),
+  new THREE.Vector3(0.0, 1.0, 0.0),
+  new THREE.Vector3(0.0, 0.0, 1.0),
+  new THREE.Vector3(1.0, 0.0, 1.0),
+  new THREE.Vector3(1.0, 1.0, 1.0),
+  new THREE.Vector3(0.0, 1.0, 1.0)
+  );
+  geometry.faces.push(
+    new THREE.Face3(0,1,2),
+  new THREE.Face3(0,2,3),
+  new THREE.Face3(0,4,1),
+  new THREE.Face3(1,4,5),
+  new THREE.Face3(1,5,2),
+  new THREE.Face3(2,5,6),
+  new THREE.Face3(2,6,3),
+  new THREE.Face3(3,6,7),
+  new THREE.Face3(3,7,0),
+  new THREE.Face3(0,7,4),
+  new THREE.Face3(4,6,5),
+  new THREE.Face3(6,4,7)
+  );
+  geometry.computeFaceNormals();
+  
+  var mesh = new THREE.Mesh( geometry, material);
+  scene.add( mesh);
+  
 }
 
 function render(){
   renderer.render(scene, camera);
-} 
+}
 
 function animate(){
   requestAnimationFrame( animate );

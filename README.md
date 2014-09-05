@@ -1,39 +1,37 @@
-PyPlot3D
-========
+I want to make a 2-D and 3-D rendering library which uses THREE.js to
+render into a web page. Specifically, I am targeting manipulatable
+3-D graphs that can be created in a iPython notebook.
 
-This is a package to create rotatable three dimensional graphs in a
-ipython notebook. It does so by writing a temporary file with html,
-and including that in the notebook. It uses three.js to do so.
+Math types: These types support the math necessary for 2-D and 3-D
+rendering
+- Vector2D : A two dimensional vector.
+- Matrix3 : A 3x3 matrix for transforming the 2-D vector.
+- *Vector3D* : A three dimensional vector.
+- Matrix4 : A 4x4 matrix for transforming the 3-D vector.
 
-The project is currently in the planning stage, but has the following
-goals:
+Geometry types : These types hold the geometry information
+*GeoObj* : This is the base class.
+- Sprite : A 2-D picture rendered at a vertex.
+      + PointSet : A collection of points (vertices) that will render
+        as fixed sized point.
+      + Text : Text that renders at a vertex.
+- *Line* : A single connected line between many vertices.
+- *TriangleSet* : A set of triangles drawn between vertices.
+- *GeoSet* : A collection of sprites, lines, triangles that all share
+  the same set of indexed vertices.
+    + Polygon : A geoset with a line around the perimeter, and
+      triangles in the center.
+        * Rectangle
+    + Box : A geoset that describes a box. It has lines at the edges,
+      and triangles filling in the faces.
+    + Frame2D : A GeoSet that describes frame with tickmarks and
+      text.
+    + Frame3D : A GeoSet that has a box outline with tickmarks, the
+      rear faces of the mesh should have a wiremesh in addition to
+      the tickmarks on the box outlines.
 
-1. Create the following graphics objects
-    1. Point
-    2. Line
-    3. Triangle
-    4. Polygon
-    5. Circle
-    6. Cylinder
-    7. Sphere
-2. Implement a write function for each object that creates a
-   corresponding three.js object.
-    1. Implement a default point style, line style, and materials.
-    2. Implement methods to set point style, line style, and
-       materials.
-3. Implement the surrounding boiler plate.
-    1. Find center of frame based on weighted average of all objects
-       in the plot (weight the objects based on surface area).
-    2. Find camera viewing angle based on standard deviation of the
-       surface area of all objects.
-    3. Include camera rotation based on dragging the mouse.
-    4. Define default lighting.
-    4. Includes methods to set starting camera position, camera
-       vertical vector, camera viewing angle, and lighting.
-4. Implement wrapper functions for a few simplified 3-D plots
-    1. scatter plot
-    2. line plot
-    3. surface plot (both array data, and mesh data)
-
-The ultimate goal is to make rotatable 3-D plots easy to create and
-use in ipython.
+Functions : These are the functions to define
+- Render2D : This function takes a list of 2-D GeoObj and renders
+  them onto a canvas using THREE.js
+- *Render3D* : This function takes a list of 3-D GeoObj and renders
+  then onto a canvas using THREE.js

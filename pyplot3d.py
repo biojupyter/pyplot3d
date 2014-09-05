@@ -58,7 +58,8 @@ class Point:
   def transform(self, t):
     self.p.transform( t)
 
-html_wrapper = """<html>
+_html_wrapper = """\
+<html>
   <head>
     <title>Test Three.js app</title>
   </head>
@@ -68,7 +69,7 @@ html_wrapper = """<html>
 </html>
 """
 
-plot_html = """
+_plot_html = """
     <canvas 
       id="{UUID}" 
       width="600" 
@@ -81,7 +82,7 @@ plot_html = """
     {SCRIPT_MAIN}
 """
 
-script_main = """
+_script_main = """
     <script>
 
       var canvas = 
@@ -92,7 +93,8 @@ script_main = """
 
       renderer = new THREE.WebGLRenderer({{ 
         canvas: canvas,
-        alpha: true
+        alpha: true,
+        antialiasing: true
       }});
       renderer.setSize( canvas.width, canvas.height);
       scene = new THREE.Scene();
@@ -114,89 +116,82 @@ script_main = """
     </script>
 """
 
-script_init_camera = """
-      function init_camera() {
-        camera = new THREE.PerspectiveCamera( 
-          75, 
-          canvas.width/canvas.height, 
-          0.1, 
-          100
-        );
-        camera.position.set( -3., 10., 3. ); 
-        camera.up = new THREE.Vector3( 0, 0, 1 );
-        camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
-      }
+_init_camera = """
+function init_camera() {
+  camera = new THREE.PerspectiveCamera( 
+    75, 
+    canvas.width/canvas.height, 
+    0.1, 
+    100
+  );
+  camera.position.set( -3., 10., 3. ); 
+  camera.up = new THREE.Vector3( 0, 0, 1 );
+  camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+}
 """
 
-script_init_lights = """
-      function init_lights() {
-        var light = new THREE.DirectionalLight( 0x882222 );
-        camera.add( light );
-        light.position.set( 0, 100., 30. );
- 
-        light = new THREE.DirectionalLight( 0x228822 );
-        camera.add( light );
-        light.position.set( 60., 80., 30. );
+_init_lights = """
+function init_lights() {
+  var light = new THREE.DirectionalLight( 0x882222 );
+  camera.add( light );
+  light.position.set( 0, 100., 30. );
 
-        light = new THREE.DirectionalLight( 0x222288 );
-        camera.add( light );
-        light.position.set( 0., 80., 90. );
-        
-        light = new THREE.AmbientLight( 0x444444 );
-        scene.add( light );
-        scene.add( camera );
-      }
+  light = new THREE.DirectionalLight( 0x228822 );
+  camera.add( light );
+  light.position.set( 60., 80., 30. );
+
+  light = new THREE.DirectionalLight( 0x222288 );
+  camera.add( light );
+  light.position.set( 0., 80., 90. );
+
+  light = new THREE.AmbientLight( 0x444444 );
+  scene.add( light );
+  scene.add( camera );
+}
 """
 
-script_init_controls = """
-      function init_controls() {
-        controls = new THREE.OrbitControls( camera, canvas );
-
-        controls.rotateSpeed = 5.0;
-        controls.zoomSpeed = 1.2;
-
-        controls.noZoom = false;
-        controls.noPan = true;
-
-        controls.staticMoving = true;
-        controls.dynamicDampingFactor = 0.3;
-
-        controls.addEventListener( 'change', render );        
-      }
+_init_controls = """
+function init_controls() {
+  controls = new THREE.OrbitControls( camera, canvas );
+  controls.rotateSpeed = 5.0;
+  controls.zoomSpeed = 1.2;
+  controls.noZoom = false;
+  controls.noPan = true;
+  controls.staticMoving = true;
+  controls.dynamicDampingFactor = 0.3;
+  controls.addEventListener( 'change', render );        
+}
 """
 
-script_init_scene = """
-      function init_scene() {
-
-        var material = new THREE.MeshPhongMaterial( {
-          specular: 0x444444,
-          color: 0xcccccc,
-          emissive: 0x000000,
-          shininess: 100
-        });
-
-        var geometry = new THREE.SphereGeometry( 1, 32, 32 );
-
-        var sphere = new THREE.Mesh( geometry, material );
-        scene.add( sphere );
-        geometry = new THREE.BoxGeometry( 0.8, 0.9, 1. );
-        var cube = new THREE.Mesh( geometry, material );
-        cube.position.set( -1, -1, -1 );
-        scene.add( cube );
-      }
+_init_scene = """
+function init_scene() {
+  var material = new THREE.MeshPhongMaterial( {
+    specular: 0x444444,
+    color: 0xcccccc,
+    emissive: 0x000000,
+    shininess: 100
+  });
+  var geometry = new THREE.SphereGeometry( 1, 32, 32 );
+  var sphere = new THREE.Mesh( geometry, material );
+  scene.add( sphere );
+  geometry = new THREE.BoxGeometry( 0.8, 0.9, 1. );
+  var cube = new THREE.Mesh( geometry, material );
+  cube.position.set( -1, -1, -1 );
+  scene.add( cube );
+}
 """
 
-script_render = """
-      function render(){
-        renderer.render(scene, camera);
-      }
+_render = """
+function render(){
+  renderer.render(scene, camera);
+}
 """
 
-script_animate = """
-      function animate(){
-        requestAnimationFrame( animate );
-        controls.update();        
-      }
+_animate = """
+function animate(){
+  requestAnimationFrame( animate );
+  controls.update();        
+}
 """
 
 if __name__ == '__main__':
